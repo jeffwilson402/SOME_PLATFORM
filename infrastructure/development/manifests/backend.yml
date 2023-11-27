@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: distributed-backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: 005112585453.dkr.ecr.eu-west-2.amazonaws.com/development/distributed-backend:latest
+          imagePullPolicy: Always
+          command: ["npm", "run", "dev"]
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              value: "development"
+            - name: MONGO_USERNAME
+              value: "temp"
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-pass
+                  key: pass
+            - name: MONGO_HOST
+              value: "platform-temp.clyg0.mongodb.net"
+            - name: COOKIE_KEY
+              value: "secret"
+            - name: ENDPOINT_TOKEN
+              value: "template"
+            - name: FRONTEND
+              value: "localhost"
+            - name: BACKEND
+              value: "a4b4d3ec3a5b146e98e5bf88fe88947b-892329526.eu-west-2.elb.amazonaws.com"
+            - name: GOOGLE_CLIENT_ID
+              value: "template"
+            - name: GOOGLE_CLIENT_SECRET
+              value: "secret"

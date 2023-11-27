@@ -1,0 +1,8 @@
+{
+  "options": {
+    "useNewUrlParser": true,
+    "useUnifiedTopology": true
+  },
+  "migrationsDir": "src/migrations",
+  "migrationsCollection": "migrations_changelog"
+}

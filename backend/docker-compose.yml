@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  server:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    image: distributed-backend
+    container_name: distributed-backend
+    command: npm run dev
+    volumes:
+      # - ./server/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "5000:5000"
+    env_file: ./back/.env
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+    volumes:
+      - data-volume:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+    command: mongod
+  client:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    image: distributed-frontend
+    container_name: distributed-frontend
+    command: npm run test
+    volumes:
+      # - ./client/:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    node_modules:
+    web-root:
+      driver: local
